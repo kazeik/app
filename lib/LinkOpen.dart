@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 class LinkOpen {
   MethodChannel _channel = const MethodChannel("com.jingsong.app.linkopen");
 
-  static const EventChannel _eventChannel = const EventChannel("com.jingsong.app.linkopenevent");
+  EventChannel _eventChannel = const EventChannel("com.jingsong.app.linkopenevent");
 
   addMethodListener(Function event) {
     return _channel.setMethodCallHandler(event);

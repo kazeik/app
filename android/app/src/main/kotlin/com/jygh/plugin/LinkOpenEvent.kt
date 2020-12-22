@@ -22,7 +22,7 @@ class LinkOpenEvent(var activity: Activity, messenger: BinaryMessenger) : EventC
     init {
         channel.setStreamHandler(this)
 //        startTimer()
-        submitToken("12312312312312312312312312313");
+//        submitToken("12312312312312312312312312313");
     }
 
     fun startTimer() {
@@ -32,7 +32,7 @@ class LinkOpenEvent(var activity: Activity, messenger: BinaryMessenger) : EventC
                     "age" to "${index}"
             )
             activity.runOnUiThread {
-                events?.success(map)
+                events.success(map)
             }
         }, 0, 1000)
 
@@ -48,12 +48,12 @@ class LinkOpenEvent(var activity: Activity, messenger: BinaryMessenger) : EventC
 
     fun submitToken(token: String?) {
         if (!TextUtils.isEmpty(token)) {
-            activity.runOnUiThread {
-                val map = HashMap<String, Any>()
-                map["token"] = token!!
-                Log.e("tag", "准备发送数据 $map")
-                events?.success(map)
-            }
+//            activity.runOnUiThread {
+            val map = HashMap<String, Any>()
+            map["token"] = token!!
+            Log.e("tag", "准备发送数据 $map")
+            events.success(map)
+//            }
         }
     }
 }
