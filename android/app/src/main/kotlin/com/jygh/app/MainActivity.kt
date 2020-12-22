@@ -19,10 +19,10 @@ class MainActivity : FlutterActivity() {
         linkEventFactory = LinkOpenEvent(this, flutterEngine.dartExecutor.binaryMessenger)
     }
 
-    override fun onResume() {
-        super.onResume()
-        getToken()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        getToken()
+//    }
 
 
     fun getToken() {
@@ -62,6 +62,7 @@ class MainActivity : FlutterActivity() {
         if (requestCode == 100) {
             val token = intent.getStringExtra("token")
             Log.e("tag", "onActivityResult, token = $token")
+            linkEventFactory?.submitToken(token)
         }
     }
 }
