@@ -1,5 +1,7 @@
+import 'package:app/Config.dart';
 import 'package:flutter/material.dart';
 import 'package:app/LinkOpen.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,6 +32,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   LinkOpen linkOpen = LinkOpen();
+  MethodChannel _channel = const MethodChannel(Config.startApp);
+  EventChannel _eventChannel = const EventChannel(Config.resultApp);
+
+  String _token = "";
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +44,19 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text("测试"),
       ),
       body: Center(
-          child: FlatButton(
-        onPressed: () {
-          linkOpen.startActivityForResult();
-        },
-        child: Text("调app"),
-      )),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FlatButton(
+              onPressed: () {
+                linkOpen.startActivityForResult();
+              },
+              child: Text("调app"),
+            ),
+            Text("得到的token = $_token")
+          ],
+        ),
+      ),
     );
   }
 
@@ -51,15 +64,34 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    linkOpen.addEventListener();
+    _eventChannel.receiveBroadcastStream().listen((event) {
+      print("从原生传过消息来了,值 = $event");
+    });
 
-    linkOpen.addMethodListener((resultCall) {
+    _channel.setMethodCallHandler((resultCall) async {
       String method = resultCall.method;
-      Map argume = resultCall.arguments;
-      print("从原生传过消息来了 method = $method ,arguments = $argume");
+      print("从原生传过消息来了 method = $method ");
       if (method == "getToken") {
-        print("可以获取token了");
+        String value = resultCall.arguments;
+        print("可以获取token了 ,$value");
+        setState(() {
+          _token = value;
+        });
+        return value;
+      } else {
+        return null;
       }
     });
+
+    // linkOpen.addEventListener();
+    //
+    // linkOpen.addMethodListener((resultCall) {
+    //   String method = resultCall.method;
+    //   Map argume = resultCall.arguments;
+    //   print("从原生传过消息来了 method = $method ,arguments = $argume");
+    //   if (method == "getToken") {
+    //     print("可以获取token了");
+    //   }
+    // });
   }
 }

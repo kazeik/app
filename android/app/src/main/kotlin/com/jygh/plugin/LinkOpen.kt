@@ -1,10 +1,12 @@
 package com.jygh.plugin
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.ComponentName
 import android.content.Intent
 import android.text.TextUtils
 import android.util.Log
+import com.jygh.Config
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -20,7 +22,7 @@ import kotlin.concurrent.timerTask
  * 类说明:
  */
 class LinkOpen(messenger: BinaryMessenger, private val activity: Activity) : MethodChannel.MethodCallHandler {
-    private var channel = MethodChannel(messenger, "com.jingsong.app.linkopen")
+    private var channel = MethodChannel(messenger, Config.startApp)
     private var index = 0
 
     init {
@@ -47,13 +49,16 @@ class LinkOpen(messenger: BinaryMessenger, private val activity: Activity) : Met
         when (call.method) {
             "startActivityForResult" -> {
                 try {
-                    val intt = Intent(Intent.ACTION_MAIN);
+                    val intt = Intent()
+                    intt.setClassName("com.jingsong.testvalue", "com.jingsong.testvalue.MainActivity")
+//                    intt.setClassName("com.beyondbit.ias.zjjy", "io.dcloud.PandoraEntry")
                     intt.putExtra("appcode", "ghej")
-                    intt.addCategory(Intent.CATEGORY_LAUNCHER);
-                    intt.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_NEW_TASK
-                    intt.component = ComponentName("com.beyondbit.ias.zjjy", "io.dcloud.PandoraEntry")
+//                    intt.addCategory(Intent.CATEGORY_LAUNCHER);
+//                    intt.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_NEW_TASK
+//                    intt.component = ComponentName("com.beyondbit.ias.zjjy", "io.dcloud.PandoraEntry")
 
-                    activity.startActivityForResult(intt, 100)
+//                    activity.startActivity(intt)
+                    activity.startActivityForResult(intt, RESULT_OK)
 //                    submitToken("1213213123123123123123123123123")
                 } catch (ex: Exception) {
                     ex.printStackTrace()
@@ -66,7 +71,7 @@ class LinkOpen(messenger: BinaryMessenger, private val activity: Activity) : Met
         if (!TextUtils.isEmpty(token)) {
             activity.runOnUiThread {
                 Log.e("tag", "准备提交的token = $token | channel = $channel")
-                channel.invokeMethod("token", token)
+                channel.invokeMethod("getToken", token)
             }
         }
     }

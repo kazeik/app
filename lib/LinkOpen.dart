@@ -6,30 +6,16 @@
 
 import 'dart:io';
 
+import 'package:app/Config.dart';
 import 'package:flutter/services.dart';
 
 class LinkOpen {
-  MethodChannel _channel = const MethodChannel("com.jingsong.app.linkopen");
+  MethodChannel _channel = const MethodChannel(Config.startApp);
+  EventChannel _eventChannel = const EventChannel(Config.resultApp);
 
-  EventChannel _eventChannel = const EventChannel("com.jingsong.app.linkopenevent");
-
-  addMethodListener(Function event) {
-    return _channel.setMethodCallHandler(event);
-  }
-
-  addEventListener() {
-    _eventChannel.receiveBroadcastStream().listen((event) {
-      print("从原生传过消息来了,值 = $event");
-    });
-  }
-
-  Future<String> startActivityForResult() async {
+  startActivityForResult() {
     if (Platform.isAndroid) {
-      dynamic value = await _channel.invokeMethod("startActivityForResult");
-      print("得到的返回值 ： $value");
-      return value;
-    } else {
-      return "";
+      _channel.invokeMethod("startActivityForResult");
     }
   }
 
